@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { CardData } from '../../types/carrusel';
+import { CardData, YoutubeCardData, NewsletterCardData } from '../../types/carrusel';
 
 interface CardFormProps {
   initialData?: CardData;
@@ -34,6 +34,15 @@ const cardFormStyles: Record<string, React.CSSProperties> = {
     fontSize: '1em',
     boxSizing: 'border-box',
   },
+  textarea: {
+    width: '100%',
+    padding: '10px',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    fontSize: '1em',
+    boxSizing: 'border-box',
+    minHeight: '100px',
+  },
   select: {
     width: '100%',
     padding: '10px',
@@ -66,47 +75,22 @@ const cardFormStyles: Record<string, React.CSSProperties> = {
 };
 
 export const CardForm: React.FC<CardFormProps> = ({ initialData, onSave, onCancel }) => {
-  const [formData, setFormData] = useState<CardData>(() => {
-    if (initialData?.type === 'newsletter') {
-      return {
-        id: initialData.id || '',
-        type: 'newsletter',
-        title: initialData.title || '',
-        imageUrl: initialData.imageUrl || '',
-        link: initialData.link || '',
-        content: (initialData as any).content || '',
-      };
-    }
-    // Default to youtube card
-    return {
-      id: initialData?.id || '',
-      type: 'youtube',
-      title: initialData?.title || '',
-      imageUrl: initialData?.imageUrl || '',
-      link: initialData?.link || '',
-    };
+  const [formData, setFormData] = useState<CardData>(initialData ? initialData : {
+    id: Date.now().toString(),
+    type: 'youtube',
+    title: '',
+    imageUrl: '',
+    link: '',
   });
 
-  useEffect(() => {
-    if (formData.type !== 'youtube') {
-      setFormData(prev => ({ ...prev, link: '' }));
-    }
-  }, [formData.type]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const cardToSave: CardData = {
-      ...formData,
-      title: formData.title || '',
-      imageUrl: formData.imageUrl || '',
-      link: formData.type === 'youtube' ? formData.link || '' : '',
-    };
-    onSave(cardToSave);
+    onSave(formData);
   };
 
   return (
@@ -132,7 +116,14 @@ export const CardForm: React.FC<CardFormProps> = ({ initialData, onSave, onCance
         {formData.type === 'youtube' && (
           <div style={cardFormStyles.formGroup}>
             <label style={cardFormStyles.label}>URL del Video:</label>
-            <input type="text" name="link" value={formData.link ?? ''} onChange={handleChange} style={cardFormStyles.input} required />
+            <input type="text" name="link" value={(formData as YoutubeCardData).link || ''} onChange={handleChange} style={cardFormStyles.input} required />
+          </div>
+        )}
+
+        {formData.type === 'newsletter' && (
+          <div style={cardFormStyles.formGroup}>
+            <label style={cardFormStyles.label}>Contenido (Markdown):</label>
+            <textarea name="content" value={(formData as NewsletterCardData).content || ''} onChange={handleChange} style={cardFormStyles.textarea} required />
           </div>
         )}
 

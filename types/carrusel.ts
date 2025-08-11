@@ -1,4 +1,5 @@
 // types/carrusel.ts
+
 export interface BaseCardData {
   id: string;
   title: string;
@@ -12,10 +13,11 @@ export interface YoutubeCardData extends BaseCardData {
 
 export interface NewsletterCardData extends BaseCardData {
   type: 'newsletter';
-  content: string;
-  link?: string; // Optional link
+  content?: string; // Hacemos content opcional para el formulario
+  link?: string;
 }
 
+// Discriminado union para todas las tarjetas posibles
 export type CardData = YoutubeCardData | NewsletterCardData;
 
 export interface CarouselData {
@@ -24,9 +26,10 @@ export interface CarouselData {
   cards: CardData[];
 }
 
-// THIS IS THE NEW TYPE
+// Nuevo tipo para los datos que se guardan desde el formulario
+// donde el id es opcional, ya que Firestore lo genera en la creación.
 export interface CarouselSaveData {
-  id?: string; // ID is optional for new carousels
+  id?: string;
   title: string;
   cards: CardData[];
 }

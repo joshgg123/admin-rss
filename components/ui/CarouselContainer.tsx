@@ -1,11 +1,11 @@
 import React from 'react';
-import { CarouselData, CardData, YoutubeCardData, NewsletterCardData } from '../../types/carrusel'; // Importa los tipos específicos
+import { CarouselData, CardData, YoutubeCardData, NewsletterCardData } from '../../types/carrusel';
 import { YoutubeCard } from './YoutubeCard';
 import { NewsletterCard } from './NewsletterCard';
 
 interface CarouselContainerProps {
   carousel: CarouselData;
-  onNewsletterCardClick?: (card: CardData) => void;
+  onNewsletterCardClick?: (card: NewsletterCardData) => void;
 }
 
 export const CarouselContainer: React.FC<CarouselContainerProps> = ({ carousel, onNewsletterCardClick }) => {
@@ -39,11 +39,9 @@ export const CarouselContainer: React.FC<CarouselContainerProps> = ({ carousel, 
 
         {carousel.cards.map((card: CardData) => {
           if (card.type === 'youtube') {
-            // Se realiza la aserción de tipo para pasar la propiedad `card` a `YoutubeCard`
             const youtubeCard = card as YoutubeCardData;
             return <YoutubeCard key={youtubeCard.id} card={youtubeCard} />;
           } else if (card.type === 'newsletter') {
-            // Se realiza la aserción de tipo para pasar la propiedad `card` a `NewsletterCard`
             const newsletterCard = card as NewsletterCardData;
             return (
               <NewsletterCard

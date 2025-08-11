@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { CarouselData, CarouselSaveData, CardData } from '../../types/carrusel'; // Import the new type
+import { CarouselData, CarouselSaveData, CardData, NewsletterCardData } from '../../types/carrusel';
 import { CardForm } from './CardForm';
 
 interface CarouselFormProps {
@@ -127,13 +127,8 @@ export const CarouselForm: React.FC<CarouselFormProps> = ({ initialData, onSave,
   }, [initialData]);
 
   const handleAddCard = () => {
-    setEditingCard({
-      id: Date.now().toString(),
-      type: 'youtube',
-      title: '',
-      imageUrl: '',
-      link: ''
-    });
+    // Al agregar una nueva tarjeta, el editingCard es null
+    setEditingCard(null);
     setShowCardForm(true);
   };
 
@@ -149,13 +144,19 @@ export const CarouselForm: React.FC<CarouselFormProps> = ({ initialData, onSave,
   };
 
   const handleCardSave = (savedCard: CardData) => {
-    if (editingCard) {
+    // Verificamos si la tarjeta ya existe en el array de cards
+    const cardExists = cards.some(card => card.id === savedCard.id);
+
+    if (cardExists) {
+      // Si existe, la actualizamos
       setCards(prevCards => prevCards.map(card =>
         card.id === savedCard.id ? savedCard : card
       ));
     } else {
+      // Si no existe, es una nueva tarjeta, la agregamos
       setCards(prevCards => [...prevCards, savedCard]);
     }
+
     setShowCardForm(false);
     setEditingCard(null);
   };
@@ -176,11 +177,11 @@ export const CarouselForm: React.FC<CarouselFormProps> = ({ initialData, onSave,
       title: title || '',
       cards: cards.map(card => {
         if (card.type === 'newsletter') {
-          // Remove link property for newsletter cards
-          const { link, ...rest } = card;
-          return rest;
+          return {
+            ...card,
+            content: (card as NewsletterCardData).content || '',
+          };
         }
-        // For youtube cards, keep link as string
         return card;
       })
     };

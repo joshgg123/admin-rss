@@ -147,11 +147,8 @@ export default function AdminPage() {
     }
   };
   
-  // <---- LA CORRECCIÓN ESTÁ AQUÍ ---->
-  // Cambiamos el tipo de parámetro de 'CarouselData' a 'CarouselSaveData'
   const handleCarouselFormSave = async (savedCarousel: CarouselSaveData) => {
     try {
-      // El resto de la lógica de guardado no necesita cambios y ya era correcta
       if (savedCarousel.id) {
         const { id, ...dataToUpdate } = savedCarousel;
         const carouselDoc = doc(db, 'carousels', id);
@@ -163,9 +160,9 @@ export default function AdminPage() {
       fetchCarousels();
       setShowCarouselForm(false);
       setEditingCarousel(null);
-    } catch (err) {
+    } catch (err:any) {
       console.error("Error al guardar el carrusel:", err);
-      alert("Error al guardar el carrusel.");
+      alert(`Error al guardar el carrusel: ${err.message}`); // Mensaje de error más específico
     }
   };
 
