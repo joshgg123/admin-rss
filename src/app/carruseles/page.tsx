@@ -156,7 +156,7 @@ export default function AdminPage() {
       } else {
         // Copia y elimina id si existe para evitar guardarlo en Firestore
         const dataToSave = { ...savedCarousel };
-        delete (dataToSave as any).id;
+        delete (dataToSave).id;
         await addDoc(carouselsCollection, dataToSave);
       }
       fetchCarousels();

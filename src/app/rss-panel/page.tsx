@@ -49,8 +49,8 @@ export default function RssPanel() {
             description: channel.description,
             imageUrl: channel.image?.url || channel['itunes:image']?.href || null,
           };
-        } catch (error) {
-          console.error(`Error parseando ${url}`, error);
+        } catch  {
+          console.error(`Error parseando ${url}`);
           return { id, url };
         }
       })
