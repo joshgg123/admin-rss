@@ -160,9 +160,13 @@ export default function AdminPage() {
       fetchCarousels();
       setShowCarouselForm(false);
       setEditingCarousel(null);
-    } catch (err:any) {
+    } catch (err) {
       console.error("Error al guardar el carrusel:", err);
-      alert(`Error al guardar el carrusel: ${err.message}`); // Mensaje de error más específico
+      if (err instanceof Error) {
+        alert(`Error al guardar el carrusel: ${err.message}`); // Mensaje de error más específico
+      } else {
+        alert("Error al guardar el carrusel.");
+      }
     }
   };
 

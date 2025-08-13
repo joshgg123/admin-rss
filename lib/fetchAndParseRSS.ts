@@ -21,19 +21,35 @@ export async function fetchAndParseRSS() {
         const channel = json.rss?.channel;
         const episodes = Array.isArray(channel?.item) ? channel.item : [channel?.item];
 
-        return {
-          id,
-          title: channel?.title || "Sin título",
-          description: channel?.description || "",
-          thumbnail: channel?.["itunes:image"]?.["@_href"] || "",
-          author: channel?.["itunes:author"] || "",
-          episodes: episodes.map((ep: any) => ({
-            title: ep.title,
-            audioUrl: ep.enclosure?.["@_url"] || "",
-            pubDate: ep.pubDate,
-            description: ep.description,
-          })),
-        };
+        interface Episode {
+          title: string;
+          audioUrl: string;
+          pubDate: string;
+          description: string;
+        }
+
+        interface ParsedFeed {
+          id: string;
+          title: string;
+          description: string;
+          thumbnail: string;
+          author: string;
+          episodes: Episode[];
+        }
+
+                return {
+                  id,
+                  title: channel?.title || "Sin título",
+                  description: channel?.description || "",
+                  thumbnail: channel?.["itunes:image"]?.["@_href"] || "",
+                  author: channel?.["itunes:author"] || "",
+                  episodes: episodes.map((ep: any): Episode => ({
+                    title: ep.title,
+                    audioUrl: ep.enclosure?.["@_url"] || "",
+                    pubDate: ep.pubDate,
+                    description: ep.description,
+                  })),
+                } as ParsedFeed;
       } catch (error) {
         console.error(`Error parsing RSS (${url}):`, error);
         return null;

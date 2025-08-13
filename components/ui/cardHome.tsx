@@ -2,11 +2,11 @@ interface CardHomeProps {
   texto: string;
   link:string;
 onClick?: () => void;
-title?: string;
+
 image?: string;
 }
 
-export function CardHome({ texto, link, onClick, title, image }: CardHomeProps) {
+export function CardHome({ texto, link, onClick, image }: CardHomeProps) {
   return (
 
     <a href={link} onClick={onClick} className="bg-gray-200 m-2 shadow-md rounded-lg p-3 flex flex-col h-48 w-48 items-center ">
