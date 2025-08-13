@@ -1,11 +1,11 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
 import db from '../../../lib/firebaseClient';
 import { CarouselData, CarouselSaveData } from '../../../types/carrusel';
 import { CarouselForm } from '../../../components/ui/carruselFrom';
 
-// Definición de estilos para la página de administración
+// Estilos para la página de administración
 const adminPageStyles: Record<string, React.CSSProperties> = {
   container: {
     padding: '30px',
@@ -107,9 +107,9 @@ export default function AdminPage() {
     setError(null);
     try {
       const querySnapshot = await getDocs(carouselsCollection);
-      const fetchedCarousels = querySnapshot.docs.map(doc => ({
-        ...doc.data(),
-        id: doc.id
+      const fetchedCarousels = querySnapshot.docs.map(docItem => ({
+        ...docItem.data(),
+        id: docItem.id
       })) as CarouselData[];
       setCarousels(fetchedCarousels);
     } catch (err) {
@@ -146,7 +146,7 @@ export default function AdminPage() {
       }
     }
   };
-  
+
   const handleCarouselFormSave = async (savedCarousel: CarouselSaveData) => {
     try {
       if (savedCarousel.id) {
@@ -154,7 +154,9 @@ export default function AdminPage() {
         const carouselDoc = doc(db, 'carousels', id);
         await updateDoc(carouselDoc, dataToUpdate);
       } else {
-        const { id, ...dataToSave } = savedCarousel;
+        // Copia y elimina id si existe para evitar guardarlo en Firestore
+        const dataToSave = { ...savedCarousel };
+        delete (dataToSave as any).id;
         await addDoc(carouselsCollection, dataToSave);
       }
       fetchCarousels();
@@ -163,7 +165,7 @@ export default function AdminPage() {
     } catch (err) {
       console.error("Error al guardar el carrusel:", err);
       if (err instanceof Error) {
-        alert(`Error al guardar el carrusel: ${err.message}`); // Mensaje de error más específico
+        alert(`Error al guardar el carrusel: ${err.message}`);
       } else {
         alert("Error al guardar el carrusel.");
       }
@@ -205,11 +207,23 @@ export default function AdminPage() {
             ) : (
               carousels.map(carousel => (
                 <div key={carousel.id} style={adminPageStyles.carouselItem}>
-                  <h3 style={adminPageStyles.carouselItemTitle}>{carousel.title} (`{carousel.id}`)</h3>
+                  <h3 style={adminPageStyles.carouselItemTitle}>
+                    {carousel.title} ({carousel.id})
+                  </h3>
                   <p style={adminPageStyles.carouselItemCount}>Tarjetas: {carousel.cards.length}</p>
                   <div style={adminPageStyles.buttonGroup}>
-                    <button onClick={() => handleEditCarousel(carousel)} style={{...adminPageStyles.actionButton, ...adminPageStyles.editButton}}>Editar</button>
-                    <button onClick={() => handleDeleteCarousel(carousel.id)} style={{...adminPageStyles.actionButton, ...adminPageStyles.deleteButton}}>Eliminar</button>
+                    <button
+                      onClick={() => handleEditCarousel(carousel)}
+                      style={{ ...adminPageStyles.actionButton, ...adminPageStyles.editButton }}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => handleDeleteCarousel(carousel.id)}
+                      style={{ ...adminPageStyles.actionButton, ...adminPageStyles.deleteButton }}
+                    >
+                      Eliminar
+                    </button>
                   </div>
                 </div>
               ))

@@ -92,11 +92,12 @@ export default function RssPanel() {
       <h1 className="text-2xl font-bold">Gestión de Podcasts RSS</h1>
 
       <div className="flex gap-2">
-        <Input
-          placeholder="https://example.com/feed"
-          value={newLink}
-          onChange={(e) => setNewLink(e.target.value)}
-        />
+<Input
+  placeholder="https://example.com/feed"
+  value={newLink}
+  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewLink(e.target.value)}
+/>
+
         <Button onClick={addRssLink}>Agregar</Button>
       </div>
 

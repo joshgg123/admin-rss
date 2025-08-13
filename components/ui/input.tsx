@@ -1,8 +1,6 @@
-// src/components/ui/Input.tsx
+import { InputHTMLAttributes } from 'react';
 
-import { InputHTMLAttributes } from 'react'
-
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {}
+type InputProps = InputHTMLAttributes<HTMLInputElement>;
 
 export function Input({ className = '', ...props }: InputProps) {
   return (
@@ -10,5 +8,5 @@ export function Input({ className = '', ...props }: InputProps) {
       className={`px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${className}`}
       {...props}
     />
-  )
+  );
 }

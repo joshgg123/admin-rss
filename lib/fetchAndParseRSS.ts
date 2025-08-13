@@ -1,7 +1,7 @@
 import axios from "axios";
 import { XMLParser } from "fast-xml-parser";
 import  db  from "./firebaseAdmin";
-
+import Video from "../types/podcast";
 const parser = new XMLParser({
   ignoreAttributes: false,
   attributeNamePrefix: "@_",
@@ -25,7 +25,6 @@ export async function fetchAndParseRSS() {
           title: string;
           audioUrl: string;
           pubDate: string;
-          description: string;
         }
 
         interface ParsedFeed {
@@ -43,11 +42,10 @@ export async function fetchAndParseRSS() {
                   description: channel?.description || "",
                   thumbnail: channel?.["itunes:image"]?.["@_href"] || "",
                   author: channel?.["itunes:author"] || "",
-                  episodes: episodes.map((ep: any): Episode => ({
+                  episodes: episodes.map((ep: Video): Episode => ({
                     title: ep.title,
-                    audioUrl: ep.enclosure?.["@_url"] || "",
-                    pubDate: ep.pubDate,
-                    description: ep.description,
+                    audioUrl: ep.link,
+                    pubDate: ep.publishedAt,
                   })),
                 } as ParsedFeed;
       } catch (error) {
