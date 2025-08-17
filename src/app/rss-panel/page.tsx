@@ -76,7 +76,7 @@ export default function RssPanel() {
       const res = await fetch('/api/podcasts');
       if (!res.ok) throw new Error('Error al reparsear');
       alert('Feeds actualizados con éxito');
-    } catch (e) {
+    } catch{
       alert('Hubo un error');
     } finally {
       setLoading(false);
